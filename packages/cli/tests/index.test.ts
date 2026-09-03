@@ -1,5 +1,9 @@
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { expect, test } from "vite-plus/test";
-import { resolveUploadTargets, uploadCommand } from "../src/commands/upload.ts";
+import { loadModeEnv, resolveUploadTargets, uploadCommand } from "../src/commands/upload.ts";
+import { loadConfig } from "../src/config.ts";
 import { defineConfig } from "../src/index.ts";
 
 test("re-exports defineConfig without changing its value", () => {
@@ -12,6 +16,58 @@ test("makes the environment argument optional", () => {
   expect(uploadCommand.args).toMatchObject({
     env: { required: false },
   });
+});
+
+test("loads Vite env files before evaluating the config", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "mpc-plus-env-"));
+  const appidName = "MPC_PLUS_TEST_WX_APPID";
+  const privateKeyPathName = "MPC_PLUS_TEST_PRIVATE_KEY_PATH";
+  const previousAppid = process.env[appidName];
+  const previousPrivateKeyPath = process.env[privateKeyPathName];
+
+  delete process.env[appidName];
+  delete process.env[privateKeyPathName];
+
+  try {
+    await writeFile(join(cwd, ".env"), `${appidName}=base\n${privateKeyPathName}=base-key\n`);
+    await writeFile(join(cwd, ".env.local"), `${privateKeyPathName}=local-key\n`);
+    await writeFile(join(cwd, ".env.dev"), `${appidName}=dev-appid\n`);
+    await writeFile(
+      join(cwd, "mpc.config.mjs"),
+      `export default {
+        platforms: {
+          wechat: [{
+            env: "dev",
+            appid: process.env.${appidName},
+            privateKeyPath: process.env.${privateKeyPathName},
+          }],
+        },
+      };`,
+    );
+
+    loadModeEnv("dev", cwd);
+    const config = await loadConfig(cwd);
+    const environment = config.platforms?.wechat?.[0];
+
+    expect(environment).toMatchObject({
+      appid: "dev-appid",
+      privateKeyPath: "local-key",
+    });
+  } finally {
+    if (previousAppid === undefined) {
+      delete process.env[appidName];
+    } else {
+      process.env[appidName] = previousAppid;
+    }
+
+    if (previousPrivateKeyPath === undefined) {
+      delete process.env[privateKeyPathName];
+    } else {
+      process.env[privateKeyPathName] = previousPrivateKeyPath;
+    }
+
+    await rm(cwd, { recursive: true, force: true });
+  }
 });
 
 test("resolves every configured environment when filters are omitted", () => {

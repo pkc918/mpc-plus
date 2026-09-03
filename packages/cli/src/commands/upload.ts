@@ -1,9 +1,14 @@
 import { defineCommand } from "citty";
 import { consola } from "consola";
+import { loadEnv } from "@voidzero-dev/vite-plus-core";
 import { useCliContext } from "../context.ts";
 import type { MPCConfig, StandardPlatformsConfig } from "@mpc-plus/standard";
 
 const logger = consola.withTag("mpc");
+
+export function loadModeEnv(mode = "", cwd = process.cwd()) {
+  Object.assign(process.env, loadEnv(mode, cwd, ""));
+}
 
 function getErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error);
@@ -59,8 +64,9 @@ export const uploadCommand = defineCommand({
     try {
       logger.success(`参数解析: env=${requestedEnv}, platform=${requestedPlatform}`);
 
-      const { mpc, getConfig, resolveConfig } = useCliContext();
+      const { cwd, mpc, getConfig, resolveConfig } = useCliContext();
 
+      loadModeEnv(args.env, cwd);
       const config = await getConfig();
       const targets = resolveUploadTargets(config, args.platform, args.env);
 
