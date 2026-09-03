@@ -28,20 +28,25 @@ export default defineConfig({
     wechat: [
       {
         env: "prod",
-        appid: process.env.WECHAT_APPID ?? "",
-        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "",
+        appid: process.env.WX_APPID ?? "",
+        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "./private.key",
       },
     ],
   },
 });
 ```
 
+创建 `.env.prod`：
+
+```dotenv
+WX_APPID=wx123
+WECHAT_PRIVATE_KEY_PATH=/secure/private.wx.key
+```
+
 运行：
 
 ```bash
-WECHAT_APPID=wx123 \
-WECHAT_PRIVATE_KEY_PATH=/secure/private.wx.key \
-pnpm exec mpc upload --platform wechat --env prod
+vp exec mpc upload --platform wechat --env prod
 ```
 
 ## 上传选项
@@ -50,9 +55,9 @@ pnpm exec mpc upload --platform wechat --env prod
 
 ```ts
 {
-  env: 'prod',
-  appid: process.env.WECHAT_APPID ?? '',
-  privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? '',
+  env: "prod",
+  appid: process.env.WX_APPID ?? "",
+  privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "",
   upload: {
     robot: 1,
     threads: 4,

@@ -30,13 +30,13 @@ export default defineConfig({
     wechat: [
       {
         env: "dev",
-        appid: process.env.WECHAT_DEV_APPID ?? "",
-        privateKeyPath: process.env.WECHAT_DEV_PRIVATE_KEY_PATH ?? "",
+        appid: process.env.WX_APPID ?? "",
+        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "./private.key",
       },
       {
         env: "prod",
-        appid: process.env.WECHAT_PROD_APPID ?? "",
-        privateKeyPath: process.env.WECHAT_PROD_PRIVATE_KEY_PATH ?? "",
+        appid: process.env.WX_APPID ?? "",
+        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "./private.key",
         release: {
           description: "Production release",
         },
@@ -61,20 +61,49 @@ export default defineConfig({
 
 ```ts
 wechat: [
-  { env: "dev", appid: "...", privateKeyPath: "/path/to/private-key" },
-  { env: "prod", appid: "...", privateKeyPath: "/path/to/private-key" },
+  { env: "dev", appid: process.env.WX_APPID ?? "", privateKeyPath: "./private.key" },
+  { env: "prod", appid: process.env.WX_APPID ?? "", privateKeyPath: "./private.key" },
 ];
+```
+
+CLI 在读取配置文件前，使用命令行的 `--env` 作为 Vite mode。执行 `--env dev`
+时会先按 Vite 规则合并：
+
+```text
+.env
+.env.local
+.env.dev
+.env.dev.local
+```
+
+`--env prod` 会相应读取 `.env.prod` 和 `.env.prod.local`。mode 专用文件覆盖通用文件，
+终端或 CI 已设置的系统环境变量优先级最高。合并结果会在配置文件执行前写入
+`process.env`，因此配置继续直接读取 `process.env.WX_APPID`。
+
+不传 `--env` 时只使用通用的 `.env` 和 `.env.local`；需要 mode 专用变量时应明确传入
+`--env`。
+
+例如 `.env.dev` 和 `.env.prod` 可以使用相同的变量名：
+
+```dotenv title=".env.dev"
+WX_APPID=wx-dev-appid
+WECHAT_PRIVATE_KEY_PATH=./private.dev.key
+```
+
+```dotenv title=".env.prod"
+WX_APPID=wx-prod-appid
+WECHAT_PRIVATE_KEY_PATH=./private.prod.key
 ```
 
 环境中的 `project` 和 `release` 会覆盖同名全局字段，适合为不同环境指定构建目录或发布说明：
 
 ```ts
 {
-  env: 'prod',
-  project: { root: './dist/prod/mp-weixin' },
-  release: { description: 'Production release' },
-  appid: process.env.WECHAT_PROD_APPID ?? '',
-  privateKeyPath: process.env.WECHAT_PROD_PRIVATE_KEY_PATH ?? '',
+  env: "prod",
+  project: { root: "./dist/prod/mp-weixin" },
+  release: { description: "Production release" },
+  appid: process.env.WX_APPID ?? "",
+  privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "",
 }
 ```
 

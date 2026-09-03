@@ -33,8 +33,8 @@ export default defineConfig({
     wechat: [
       {
         env: "dev",
-        appid: process.env.WECHAT_APPID ?? "",
-        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "",
+        appid: process.env.WX_APPID ?? "",
+        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "./private.key",
       },
     ],
   },

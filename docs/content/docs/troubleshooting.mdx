@@ -34,11 +34,11 @@ icon: Wrench
 [mpc:wechat] ERROR 配置校验: 缺少必填配置 appid, privateKeyPath
 ```
 
-确认 CI 或当前终端已经设置环境变量：
+确认目标 mode 的环境文件包含所需变量。例如上传 `prod` 时检查：
 
 ```bash
-test -n "$WECHAT_APPID" && echo 'appid configured'
-test -f "$WECHAT_PRIVATE_KEY_PATH" && echo 'private key found'
+rg '^WX_APPID=' .env .env.local .env.prod .env.prod.local
+rg '^WECHAT_PRIVATE_KEY_PATH=' .env .env.local .env.prod .env.prod.local
 ```
 
 ## 项目初始化失败
