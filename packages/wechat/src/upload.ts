@@ -16,17 +16,17 @@ export async function upload(config: WechatConfig): Promise<WechatUploadResult> 
     !projectPath && "project.root",
     !version && "release.version",
     !config.appid && "appid",
-    !config.privateKey && "privateKey",
+    !config.privateKeyPath && "privateKeyPath",
   ].filter(Boolean);
 
-  if (!projectPath || !version || !config.appid || !config.privateKey) {
+  if (!projectPath || !version || !config.appid || !config.privateKeyPath) {
     const message = `缺少必填配置 ${missingFields.join(", ")}`;
     logger.error(`配置校验: ${message}`);
     throw new Error(message);
   }
 
   logger.success(
-    `配置校验: projectPath=${projectPath}, version=${version}, appid=已配置, privateKey=已配置`,
+    `配置校验: projectPath=${projectPath}, version=${version}, appid=已配置, privateKeyPath=已配置`,
   );
 
   const project = (() => {
@@ -35,7 +35,7 @@ export async function upload(config: WechatConfig): Promise<WechatUploadResult> 
         appid: config.appid,
         type: "miniProgram",
         projectPath,
-        privateKey: config.privateKey,
+        privateKeyPath: config.privateKeyPath,
         ignores: ["node_modules/**/*"],
       });
 

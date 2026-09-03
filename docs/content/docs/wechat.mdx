@@ -29,7 +29,7 @@ export default defineConfig({
       {
         env: "prod",
         appid: process.env.WECHAT_APPID ?? "",
-        privateKey: process.env.WECHAT_PRIVATE_KEY ?? "",
+        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "",
       },
     ],
   },
@@ -40,7 +40,7 @@ export default defineConfig({
 
 ```bash
 WECHAT_APPID=wx123 \
-WECHAT_PRIVATE_KEY=/secure/private.wx.key \
+WECHAT_PRIVATE_KEY_PATH=/secure/private.wx.key \
 pnpm exec mpc upload --platform wechat --env prod
 ```
 
@@ -52,7 +52,7 @@ pnpm exec mpc upload --platform wechat --env prod
 {
   env: 'prod',
   appid: process.env.WECHAT_APPID ?? '',
-  privateKey: process.env.WECHAT_PRIVATE_KEY ?? '',
+  privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? '',
   upload: {
     robot: 1,
     threads: 4,
@@ -76,6 +76,6 @@ pnpm exec mpc upload --platform wechat --env prod
 - `project.root`
 - `release.version`
 - `appid`
-- `privateKey`
+- `privateKeyPath`
 
 CLI 会在终端列出缺失字段，并以非零状态退出。

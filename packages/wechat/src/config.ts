@@ -1,5 +1,5 @@
-import type {ProjectConfig, ReleaseConfig} from "@mpc-plus/core";
-import type {upload as miniprogramUpload} from "miniprogram-ci";
+import type { ProjectConfig, ReleaseConfig } from "@mpc-plus/core";
+import type { upload as miniprogramUpload } from "miniprogram-ci";
 
 type MiniprogramUploadOptions = Parameters<typeof miniprogramUpload>[0];
 
@@ -13,7 +13,7 @@ export type WechatUploadResult = Awaited<ReturnType<typeof miniprogramUpload>>;
 export interface WechatConfig {
   env: string;
   appid: string;
-  privateKey: string;
+  privateKeyPath: string;
   project?: ProjectConfig;
   release?: ReleaseConfig;
   upload?: WechatUploadOptions;

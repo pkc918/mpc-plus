@@ -31,14 +31,14 @@ icon: Wrench
 ## 缺少微信配置
 
 ```text
-[mpc:wechat] ERROR 配置校验: 缺少必填配置 appid, privateKey
+[mpc:wechat] ERROR 配置校验: 缺少必填配置 appid, privateKeyPath
 ```
 
 确认 CI 或当前终端已经设置环境变量：
 
 ```bash
 test -n "$WECHAT_APPID" && echo 'appid configured'
-test -f "$WECHAT_PRIVATE_KEY" && echo 'private key found'
+test -f "$WECHAT_PRIVATE_KEY_PATH" && echo 'private key found'
 ```
 
 ## 项目初始化失败

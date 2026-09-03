@@ -8,7 +8,7 @@ test("defineConfig preserves the standard configuration", () => {
         {
           env: "production",
           appid: "appid",
-          privateKey: "private-key",
+          privateKeyPath: "/path/to/private-key",
         },
       ],
     },

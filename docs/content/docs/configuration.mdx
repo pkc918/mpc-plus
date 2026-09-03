@@ -31,12 +31,12 @@ export default defineConfig({
       {
         env: "dev",
         appid: process.env.WECHAT_DEV_APPID ?? "",
-        privateKey: process.env.WECHAT_DEV_PRIVATE_KEY ?? "",
+        privateKeyPath: process.env.WECHAT_DEV_PRIVATE_KEY_PATH ?? "",
       },
       {
         env: "prod",
         appid: process.env.WECHAT_PROD_APPID ?? "",
-        privateKey: process.env.WECHAT_PROD_PRIVATE_KEY ?? "",
+        privateKeyPath: process.env.WECHAT_PROD_PRIVATE_KEY_PATH ?? "",
         release: {
           description: "Production release",
         },
@@ -61,8 +61,8 @@ export default defineConfig({
 
 ```ts
 wechat: [
-  { env: "dev", appid: "...", privateKey: "..." },
-  { env: "prod", appid: "...", privateKey: "..." },
+  { env: "dev", appid: "...", privateKeyPath: "/path/to/private-key" },
+  { env: "prod", appid: "...", privateKeyPath: "/path/to/private-key" },
 ];
 ```
 
@@ -74,11 +74,11 @@ wechat: [
   project: { root: './dist/prod/mp-weixin' },
   release: { description: 'Production release' },
   appid: process.env.WECHAT_PROD_APPID ?? '',
-  privateKey: process.env.WECHAT_PROD_PRIVATE_KEY ?? '',
+  privateKeyPath: process.env.WECHAT_PROD_PRIVATE_KEY_PATH ?? '',
 }
 ```
 
 <Callout type="warn" title="不要提交密钥">
-  `appid` 和 `privateKey` 建议从环境变量读取。`privateKey`
+  `appid` 和 `privateKeyPath` 建议从环境变量读取。`privateKeyPath`
   是微信上传私钥文件路径，不应把私钥内容写入仓库。
 </Callout>

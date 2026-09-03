@@ -18,8 +18,16 @@ test("resolves every configured environment when filters are omitted", () => {
   const config = defineConfig({
     platforms: {
       wechat: [
-        { env: "dev", appid: "dev-appid", privateKey: "dev-key" },
-        { env: "prod", appid: "prod-appid", privateKey: "prod-key" },
+        {
+          env: "dev",
+          appid: "dev-appid",
+          privateKeyPath: "/path/to/dev-key",
+        },
+        {
+          env: "prod",
+          appid: "prod-appid",
+          privateKeyPath: "/path/to/prod-key",
+        },
       ],
     },
   });

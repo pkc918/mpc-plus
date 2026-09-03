@@ -15,12 +15,12 @@ export default defineConfig({
       {
         env: "dev",
         appid: process.env.WX_APPID ?? "",
-        privateKey: process.env.WECHAT_PRIVATE_KEY ?? "",
+        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "",
       },
       {
         env: "prod",
         appid: process.env.WX_APPID ?? "",
-        privateKey: process.env.WECHAT_PRIVATE_KEY ?? "",
+        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "",
       },
     ],
   },
