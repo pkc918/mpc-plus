@@ -42,3 +42,32 @@ jobs:
         run: npm run publish:packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  release:
+    name: Create GitHub Release
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+
+    steps:
+      - name: Create release from the published tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          if gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
+            echo "Release $RELEASE_TAG already exists; skipping creation."
+            exit 0
+          fi
+
+          args=(--verify-tag --generate-notes --title "$RELEASE_TAG")
+          version="${RELEASE_TAG%%+*}"
+          if [[ "$version" == *-* ]]; then
+            args+=(--prerelease --latest=false)
+          fi
+
+          gh release create "$RELEASE_TAG" "${args[@]}"

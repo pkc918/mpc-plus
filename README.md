@@ -50,9 +50,14 @@ All public packages use one version. Update the versions in `packages/core`, `pa
 `packages/wechat`, `packages/standard`, and `packages/cli`, commit the change, and push a matching
 `v<version>` tag. For example, version `0.1.0` must be released from tag `v0.1.0`.
 
-The tag starts `.github/workflows/publish.yml`, which tests, builds, and publishes the packages to
+The tag starts `.github/workflows/publish.yml`, which builds, tests, and publishes the packages to
 npm in dependency order. Configure an npm granular access token as the `NPM_TOKEN` repository secret
 before the first release.
+
+After npm publishing succeeds, the workflow creates a GitHub Release for the same tag with
+automatically generated release notes. Prerelease versions such as `v0.0.1-alpha.1` are marked as
+pre-releases and are not marked as latest. Existing releases are left unchanged when the release
+job is rerun. Release creation uses the built-in `GITHUB_TOKEN`; no additional secret is required.
 
 Inspect the packages without uploading them:
 
