@@ -1,16 +1,21 @@
 {
   "name": "@mcp/tui",
   "version": "0.0.1-alpha.1",
-  "description": "A starter for creating a TypeScript package.",
-  "homepage": "https://github.com/author/library#readme",
+  "description": "Terminal user interface for MPC Plus.",
+  "homepage": "https://github.com/pkc918/mpc-plus#readme",
   "bugs": {
-    "url": "https://github.com/author/library/issues"
+    "url": "https://github.com/pkc918/mpc-plus/issues"
   },
   "license": "MIT",
-  "author": "Author Name <author.name@mail.com>",
+  "author": {
+    "name": "pkc918",
+    "email": "xiaopan2000918@gmail.com",
+    "url": "https://github.com/pkc918"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/author/library.git"
+    "url": "git+https://github.com/pkc918/mpc-plus.git",
+    "directory": "packages/tui"
   },
   "files": [
     "dist"

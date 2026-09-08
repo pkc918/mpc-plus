@@ -7,6 +7,11 @@
     "url": "https://github.com/pkc918/mpc-plus/issues"
   },
   "license": "MIT",
+  "author": {
+    "name": "pkc918",
+    "email": "xiaopan2000918@gmail.com",
+    "url": "https://github.com/pkc918"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pkc918/mpc-plus.git",

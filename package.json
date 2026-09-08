@@ -2,6 +2,15 @@
   "name": "mpc-plus",
   "version": "0.0.1-alpha.1",
   "private": true,
+  "homepage": "https://github.com/pkc918/mpc-plus#readme",
+  "bugs": {
+    "url": "https://github.com/pkc918/mpc-plus/issues"
+  },
+  "author": {
+    "name": "pkc918",
+    "email": "xiaopan2000918@gmail.com",
+    "url": "https://github.com/pkc918"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pkc918/mpc-plus.git"
