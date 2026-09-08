@@ -12,7 +12,7 @@
   ],
   "type": "module",
   "scripts": {
-    "ready": "vp check && vp run -r test && vp run -r build",
+    "ready": "vp run -r build && vp check && vp run -r test",
     "dev": "vp run docs#dev",
     "docs:dev": "vp run docs#dev",
     "docs:check": "vp run docs#types:check && vp run docs#lint",

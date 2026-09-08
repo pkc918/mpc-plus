@@ -32,11 +32,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Test packages
-        run: npm exec -- vp run -r test
-
       - name: Build packages
         run: npm exec -- vp run -r build
+
+      - name: Test packages
+        run: npm exec -- vp run -r test
 
       - name: Publish packages
         run: npm run publish:packages
