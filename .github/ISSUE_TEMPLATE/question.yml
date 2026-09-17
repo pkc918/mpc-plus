@@ -1,0 +1,29 @@
+name: Usage question
+description: Ask about installation, configuration, managing multiple environments, or platform uploads.
+title: "[Question]: "
+labels: [question]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please read the [README](https://github.com/pkc918/mpc-plus/blob/main/README.en.md) and search existing issues first.
+        Remove tokens, private keys, and other sensitive information from configurations and logs.
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: Describe what you are trying to accomplish and what you need help with.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Environment and configuration
+      description: Include package versions, your Node.js version, affected platforms, and relevant commands or configuration with sensitive information removed.
+    validations:
+      required: true
+  - type: textarea
+    id: attempts
+    attributes:
+      label: What you have tried
+      description: Share the documentation you consulted or the steps you tried and their results.

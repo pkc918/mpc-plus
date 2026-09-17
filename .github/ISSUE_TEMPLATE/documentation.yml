@@ -1,0 +1,25 @@
+name: Documentation feedback
+description: Report documentation errors, outdated examples, or missing information.
+title: "[Docs]: "
+labels: [documentation]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Documentation location
+      description: Provide a documentation link or repository file path, including the section if possible.
+      placeholder: README.en.md / Quick start
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe what is incorrect, unclear, or missing.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement
+      description: Describe what should be added or changed. Include examples if helpful.

@@ -1,0 +1,32 @@
+name: Feature request
+description: Suggest a new feature, platform support, or an improvement to the existing experience.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: Please search existing issues to see whether this feature has already been requested.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Use case and problem
+      description: Describe your use case and the need that existing features do not meet.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the desired behavior. Include example commands, configuration, or interaction details if helpful.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What alternatives have you tried, and why is this feature still needed?
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Include affected platforms, references, screenshots, or other background information.

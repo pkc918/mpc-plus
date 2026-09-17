@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Usage guide
+    url: https://github.com/pkc918/mpc-plus/blob/main/README.en.md
+    about: Read the quick start guide for installation, configuration, and uploads.

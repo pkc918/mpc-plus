@@ -1,0 +1,80 @@
+name: Bug report
+description: Report a problem with installation, configuration, or mini program uploads.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please search existing issues before reporting a bug. Remove tokens, private keys, and other sensitive information from configurations and logs.
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem description
+      description: Describe the problem and how it affects your use of MPC Plus.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: MPC Plus version
+      description: Provide the installed version of @mpc-plus/cli or the affected package.
+      placeholder: "@mpc-plus/cli@0.0.1-alpha.3"
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Affected platforms
+      multiple: true
+      options:
+        - WeChat (wechat)
+        - Douyin (douyin)
+        - Alipay (alipay)
+        - Xiaohongshu (xhs)
+        - General / Platform independent
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include your operating system, Node.js version, and package manager version. Specify whether you are running in CI.
+      placeholder: |
+        Operating system: macOS / Windows / Linux
+        Node.js:
+        Package manager and version:
+        Local or CI:
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Include commands, relevant configuration, and steps. Link to a minimal reproduction repository if available.
+      placeholder: |
+        1. Configure mpc.config.ts ...
+        2. Run the command ...
+        3. Observe the problem ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened? Include screenshots if helpful.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error logs
+      description: Paste error messages or stack traces with sensitive information removed.
+      render: text
