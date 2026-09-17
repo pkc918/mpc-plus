@@ -1,0 +1,7 @@
+# Shared Git workflows, fetched and cached by Codex from the upstream marketplace.
+[marketplaces.pkc918]
+source_type = "git"
+source = "https://github.com/pkc918/skills.git"
+
+[plugins."git@pkc918"]
+enabled = true

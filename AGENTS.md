@@ -25,3 +25,9 @@ release. Add a tool name to select part of the graph. For example, run
 - [ ] If setup, runtime, or package-manager behavior looks wrong, run `vp env doctor` and include its output when asking for help.
 
 <!--VITE PLUS END-->
+
+## Git plugin
+
+This project enables `git@pkc918` from <https://github.com/pkc918/skills> through `.codex/config.toml`. Use the plugin's relevant skills for Git and GitHub tasks, including `git-commit`, `git-push`, and `gh-pr`.
+
+The plugin is managed by Codex; do not copy its skills or command references into this repository. Project configuration requires a trusted project. If the plugin has not been downloaded, run `codex plugin marketplace upgrade pkc918` from the project root, then start a new session.
