@@ -10,22 +10,22 @@ icon: Package
 
 推荐把 CLI 作为开发依赖安装，团队成员和 CI 会使用相同版本：
 
-```bash
-pnpm add -D @mpc-plus/cli
+```npm
+npm i -D @mpc-plus/cli
 ```
 
 验证安装结果：
 
-```bash
-pnpm exec mpc --help
+```npm
+npm exec -- mpc --help
 ```
 
 ### 全局安装
 
 如果希望在任意目录直接执行 `mpc`：
 
-```bash
-pnpm add -g @mpc-plus/cli
+```npm
+npm i -g @mpc-plus/cli
 mpc --help
 ```
 
