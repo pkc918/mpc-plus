@@ -19,7 +19,7 @@ const platforms = [
     icon: DouyinIcon,
     accent: "bg-fd-foreground/8 text-fd-foreground",
     description: "使用 tt-ide-cli，支持测试通道和 source map。",
-    href: "/docs/configuration",
+    href: "/docs/douyin",
   },
   {
     name: "支付宝",

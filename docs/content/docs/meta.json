@@ -5,11 +5,13 @@
     "index",
     "installation",
     "configuration",
-    "---发布---",
-    "upload",
+    "---平台配置---",
     "wechat",
+    "douyin",
     "alipay",
     "xhs",
+    "---命令---",
+    "upload",
     "---支持---",
     "troubleshooting"
   ]
