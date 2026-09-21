@@ -9,6 +9,7 @@ import {
 } from "fumadocs-ui/layouts/docs/page";
 import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/components/mdx";
+import { DocsClothArticle } from "@/components/docs-cloth";
 import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { gitConfig } from "@/lib/shared";
@@ -22,10 +23,16 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const markdownUrl = getPageMarkdownUrl(page).url;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription className="mb-2">{page.data.description}</DocsDescription>
-      <div className="mb-4 flex flex-row flex-wrap items-center gap-2 border-b pb-6">
+    <DocsPage
+      toc={page.data.toc}
+      full={page.data.full}
+      slots={{ container: DocsClothArticle }}
+    >
+      <DocsTitle className="tracking-tight">{page.data.title}</DocsTitle>
+      <DocsDescription className="mb-3 max-w-2xl text-base leading-7">
+        {page.data.description}
+      </DocsDescription>
+      <div className="mb-8 flex flex-row flex-wrap items-center gap-2 border-b pb-6">
         <MarkdownCopyButton markdownUrl={markdownUrl} />
         <ViewOptionsPopover
           markdownUrl={markdownUrl}

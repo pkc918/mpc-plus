@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: LayoutProps<"/">) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen">
+      <body className="flex h-dvh min-h-0 flex-col overflow-hidden">
         <RootProvider>{children}</RootProvider>
       </body>
     </html>
