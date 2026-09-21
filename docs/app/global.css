@@ -40,29 +40,6 @@ html > body[data-scroll-locked] {
   --removed-body-scroll-bar-size: 0px !important;
 }
 
-.mpc-hero-grid {
-  background-image:
-    linear-gradient(
-      to right,
-      color-mix(in srgb, currentColor 6%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, currentColor 6%, transparent) 1px,
-      transparent 1px
-    ),
-    radial-gradient(
-      circle at 20% 15%,
-      color-mix(in srgb, var(--color-fd-primary) 15%, transparent),
-      transparent 34%
-    );
-  background-size:
-    38px 38px,
-    38px 38px,
-    100% 100%;
-}
-
 .mpc-code-glow {
   box-shadow: 0 0 80px color-mix(in srgb, var(--color-fd-primary) 16%, transparent);
 }

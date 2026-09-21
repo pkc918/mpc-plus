@@ -14,6 +14,11 @@ export function baseOptions(): BaseLayoutProps {
         </>
       ),
     },
+    links: [
+      { text: "文档", url: "/docs" },
+      { text: "安装", url: "/docs/installation" },
+      { text: "配置", url: "/docs/configuration" },
+    ],
     githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
   };
 }
