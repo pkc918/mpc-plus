@@ -19,7 +19,7 @@ body:
     attributes:
       label: MPC Plus version
       description: Provide the installed version of @mpc-plus/cli or the affected package.
-      placeholder: "@mpc-plus/cli@0.0.1-alpha.3"
+      placeholder: "@mpc-plus/cli@0.0.1-beta.1"
     validations:
       required: true
   - type: dropdown
