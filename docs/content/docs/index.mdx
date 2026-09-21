@@ -4,6 +4,12 @@ description: 用一份配置管理多平台、多环境的小程序上传流程�
 icon: Rocket
 ---
 
+<Callout title="体验更佳">
+在 Chrome 中打开下面的开关，启用 **Canvas Draw Element** 后重启浏览器，文档正文的布料效果会完整显示。
+
+<ChromeFlagLink />
+</Callout>
+
 MPC Plus 是面向小程序 CI 的命令行工具。它从当前目录读取配置，解析需要执行的平台和环境，再调用对应平台的上传能力。本地和流水线使用同一条命令。
 
 ## 五分钟上手
@@ -15,8 +21,8 @@ MPC Plus 是面向小程序 CI 的命令行工具。它从当前目录读取配�
 
 把 CLI 装进项目，锁定团队和 CI 使用的版本：
 
-```bash
-pnpm add -D @mpc-plus/cli
+```npm
+npm i -D @mpc-plus/cli
 ```
 
 </Step>
@@ -54,8 +60,8 @@ export default defineConfig({
 
 ### 执行上传
 
-```bash
-pnpm exec mpc upload
+```npm
+npm exec -- mpc upload
 ```
 
 不指定参数时，CLI 会执行配置文件中的全部平台和环境。
@@ -75,7 +81,7 @@ pnpm exec mpc upload
 
 <Cards>
   <Card title="安装" description="安装 CLI 并验证命令可用。" href="/docs/installation" />
-  <Card title="配置文件" description="声明项目、版本、平台和环境。" href="/docs/configuration" />
+  <Card title="配置文件" description="声明项目、版本和平台集合。" href="/docs/configuration" />
   <Card title="上传命令" description="筛选平台与环境，理解执行结果。" href="/docs/upload" />
-  <Card title="微信平台" description="准备 appid、私钥和构建目录。" href="/docs/wechat" />
+  <Card title="微信" description="准备 appid、私钥和构建目录。" href="/docs/wechat" />
 </Cards>
