@@ -1,17 +1,16 @@
 ---
 title: 微信
-description: 配置微信小程序上传所需的项目、凭据和上传选项。
+description: 配置微信小程序上传所需的项目、凭据和环境。
 icon: WeChat
 ---
 
-微信上传基于 `miniprogram-ci`。执行前需要准备以下内容：
+微信上传基于 `miniprogram-ci`。执行前需要准备：
 
 - 已完成构建的小程序目录。
 - 小程序 `appid`。
 - 对应小程序的上传私钥文件。
-- 可用的版本号。
 
-## 最小配置
+## 配置示例
 
 ```ts title="mpc.config.ts"
 import { defineConfig } from "@mpc-plus/cli";
@@ -27,60 +26,52 @@ export default defineConfig({
   platforms: {
     wechat: [
       {
+        env: "test",
+        appid: process.env.WX_APPID ?? "",
+        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "",
+      },
+      {
         env: "prod",
         appid: process.env.WX_APPID ?? "",
-        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "./private.key",
+        privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "",
       },
     ],
   },
 });
 ```
 
-创建 `.env.prod`：
+`--env` 会作为 Vite mode 加载对应环境文件。创建 `.env.test` 和 `.env.prod`：
 
-```dotenv
-WX_APPID=wx123
-WECHAT_PRIVATE_KEY_PATH=/secure/private.wx.key
+```dotenv title=".env.test"
+WX_APPID=wx-test-appid
+WECHAT_PRIVATE_KEY_PATH=./private.test.key
 ```
 
-运行：
-
-```bash
-vp exec mpc upload --platform wechat --env prod
+```dotenv title=".env.prod"
+WX_APPID=wx-prod-appid
+WECHAT_PRIVATE_KEY_PATH=./private.prod.key
 ```
 
-## 上传选项
-
-通过 `upload` 透传微信 CI 上传参数：
-
-```ts
-{
-  env: "prod",
-  appid: process.env.WX_APPID ?? "",
-  privateKeyPath: process.env.WECHAT_PRIVATE_KEY_PATH ?? "",
-  upload: {
-    robot: 1,
-    threads: 4,
-    setting: {
-      es6: true,
-      minify: true,
-    },
-    onProgressUpdate(event) {
-      console.log(event);
-    },
-  },
-}
+```npm
+npm exec -- mpc upload --platform wechat --env test
 ```
 
-支持的字段包括 `robot`、`threads`、`setting` 和 `onProgressUpdate`。
+私钥文件不要提交到仓库。
 
-## 上传前校验
+## 配置项
 
-以下字段缺失时不会开始上传：
-
-- `project.root`
-- `release.version`
-- `appid`
-- `privateKeyPath`
-
-CLI 会在终端列出缺失字段，并以非零状态退出。
+| 字段                      | 说明                                                         |
+| ------------------------- | ------------------------------------------------------------ |
+| `env`                     | `string`。环境标识，CLI `--env` 按此筛选。必填。             |
+| `appid`                   | `string`。小程序 AppID。必填。                               |
+| `privateKeyPath`          | `string`。上传私钥文件路径。必填。                           |
+| `project`                 | `ProjectConfig`。覆盖全局 `project`，未设置的字段继承全局值。 |
+| `project.root`            | `string`。小程序构建产物目录。必填。                         |
+| `release`                 | `ReleaseConfig`。覆盖全局 `release`，未设置的字段继承全局值。 |
+| `release.version`         | `string`。上传版本号。必填。                                 |
+| `release.description`     | `string`。版本说明，对应微信 CI 的 `desc`。可选。            |
+| `upload`                  | `WechatUploadOptions`。透传 `miniprogram-ci` 上传参数。可选。 |
+| `upload.robot`            | `number`。CI 机器人编号。                                    |
+| `upload.threads`          | `number`。上传线程数。                                       |
+| `upload.setting`          | `object`。编译设置，例如 `es6`、`minify`。                   |
+| `upload.onProgressUpdate` | `(event) => void`。上传进度回调。                            |

@@ -4,62 +4,73 @@ description: 使用身份密钥和可选版本号上传支付宝小程序。
 icon: Alipay
 ---
 
-## 准备工作
+支付宝上传基于官方 `minidev`。执行前需要准备：
 
-支付宝上传基于官方 `minidev` 的 Node.js API，CLI 已包含该依赖。
+- 支付宝小程序 AppID。
+- 从支付宝开放平台下载的身份密钥文件。
+- 已完成构建的支付宝小程序目录。
 
-- 准备支付宝小程序 AppID。
-- 从支付宝开放平台下载身份密钥文件，保存在本机或 CI 可访问的位置。
-- 先生成支付宝小程序构建产物，将 `project.root` 指向该目录。
+## 配置示例
 
-MPC 要求显式填写 `identityKeyPath`，不会使用本机快速授权作为后备方式。
-
-## 配置和上传
-
-在 `.env.prod` 中设置：
-
-```dotenv
-ALIPAY_APPID=2026000000000000
-ALIPAY_IDENTITY_KEY_PATH=/absolute/path/to/identity.json
-```
-
-在 `mpc.config.ts` 中配置：
-
-```ts
+```ts title="mpc.config.ts"
 import { defineConfig } from "@mpc-plus/cli";
 
 export default defineConfig({
+  project: {
+    root: "./dist/build/mp-alipay",
+  },
+  release: {
+    version: "1.0.0",
+    description: "优化首页体验",
+  },
   platforms: {
     alipay: [
+      {
+        env: "test",
+        appid: process.env.ALIPAY_APPID ?? "",
+        identityKeyPath: process.env.ALIPAY_IDENTITY_KEY_PATH ?? "",
+      },
       {
         env: "prod",
         appid: process.env.ALIPAY_APPID ?? "",
         identityKeyPath: process.env.ALIPAY_IDENTITY_KEY_PATH ?? "",
-        project: { root: "./dist/build/mp-alipay" },
-        release: { description: "优化首页体验" },
-        upload: { experience: false },
       },
     ],
   },
 });
 ```
 
-```bash
-npm exec -- mpc upload --platform alipay --env prod
+`--env` 会作为 Vite mode 加载对应环境文件。创建 `.env.test` 和 `.env.prod`：
+
+```dotenv title=".env.test"
+ALIPAY_APPID=2026000000000001
+ALIPAY_IDENTITY_KEY_PATH=/absolute/path/to/identity.test.json
+```
+
+```dotenv title=".env.prod"
+ALIPAY_APPID=2026000000000000
+ALIPAY_IDENTITY_KEY_PATH=/absolute/path/to/identity.prod.json
+```
+
+```npm
+npm exec -- mpc upload --platform alipay --env test
 ```
 
 路径相对于执行命令的工作目录解析，也可以使用绝对路径。身份密钥文件不要提交到仓库。
 
-## 版本与体验版
+## 配置项
 
-`release.version` 非必填。省略时，不向 SDK 传入版本号，由支付宝查询最新已上传版本并递增 patch 号，例如 `1.2.3` → `1.2.4`。
-
-指定版本时，使用 `release: { version: "1.2.3" }`。版本必须为三段数字，空字符串和预发布后缀均不接受。全局 `release.version` 会被环境继承；需要为支付宝单独启用自动递增时，设置 `release: { version: undefined }`。
-
-`release.description` 可选，对应 SDK 的 `versionDescription`。
-
-`upload.experience` 默认 `false`。设为 `true` 时，SDK 会在上传后设置体验版，并在返回值中包含 `experienceQrCodeUrl`。需要相应平台权限；该功能不包含提审或正式发布。
-
-本平台固定使用 `clientType: "alipay"`。上传失败会以非零退出码反馈，其他配置目标仍会继续执行。
+| 字段                  | 说明                                                         |
+| --------------------- | ------------------------------------------------------------ |
+| `env`                 | `string`。环境标识，CLI `--env` 按此筛选。必填。             |
+| `appid`               | `string`。小程序 AppID。必填。                               |
+| `identityKeyPath`     | `string`。身份密钥文件路径。必填，不会回退到本机快速授权。   |
+| `project`             | `ProjectConfig`。覆盖全局 `project`，未设置的字段继承全局值。 |
+| `project.root`        | `string`。已构建的支付宝小程序目录。必填。                   |
+| `release`             | `ReleaseConfig`。覆盖全局 `release`，未设置的字段继承全局值。 |
+| `release.version`     | `string`。上传版本号。可选；填写时须为三段数字 `x.y.z`，省略则由支付宝自动递增。全局版本会被环境继承；若希望支付宝单独自动递增，设置 `release: { version: undefined }`。 |
+| `release.description` | `string`。版本说明，对应 SDK 的 `versionDescription`。可选。 |
+| `upload`              | `AlipayUploadOptions`。透传 `minidev` 上传参数。可选。       |
+| `upload.experience`   | `boolean`。上传后是否设为体验版，默认 `false`。需要相应平台权限。 |
 
 官方说明：[upload 上传项目](https://opendocs.alipay.com/mini/02q3an?pathHash=12060a6b)。

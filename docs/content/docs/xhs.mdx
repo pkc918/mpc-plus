@@ -4,29 +4,20 @@ description: 使用代码上传密钥在 CI 中上传小红书小程序。
 icon: Xiaohongshu
 ---
 
-## 准备工作
+小红书上传基于官方 `xhs-mp-cli`。执行前需要准备：
 
-小红书上传使用官方 `xhs-mp-cli`，MPC 已包含该依赖。
+- 在小红书小程序控制台的「基础设置 → 代码上传秘钥」生成上传 Token。
+- 已完成构建、且包含 `project.config.json` 的小程序目录。
 
-1. 在小红书小程序控制台的「基础设置 → 代码上传秘钥」生成上传 Token。
-2. 生成小红书小程序构建产物，将 `project.root` 指向包含 `project.config.json` 的目录。
-3. 确保该文件中的 `appid` 与 MPC 配置的 `appid` 一致。
+## 配置示例
 
-## 配置与上传
-
-在 CI 中注入 `XHS_APPID`、`XHS_TOKEN` 环境变量，或在本地 `.env.prod` 中配置：
-
-```dotenv
-XHS_APPID=your-app-id
-XHS_TOKEN=your-upload-token
-```
-
-`mpc.config.ts` 示例：
-
-```ts
+```ts title="mpc.config.ts"
 import { defineConfig } from "@mpc-plus/cli";
 
 export default defineConfig({
+  project: {
+    root: "./dist/build/mp-xhs",
+  },
   release: {
     version: "1.0.0",
     description: "优化首页体验",
@@ -34,31 +25,49 @@ export default defineConfig({
   platforms: {
     xhs: [
       {
+        env: "test",
+        appid: process.env.XHS_APPID ?? "",
+        token: process.env.XHS_TOKEN ?? "",
+      },
+      {
         env: "prod",
         appid: process.env.XHS_APPID ?? "",
         token: process.env.XHS_TOKEN ?? "",
-        project: { root: "./dist/build/mp-xhs" },
       },
     ],
   },
 });
 ```
 
-```bash
-npm exec -- mpc upload --platform xhs --env prod
+`--env` 会作为 Vite mode 加载对应环境文件。创建 `.env.test` 和 `.env.prod`：
+
+```dotenv title=".env.test"
+XHS_APPID=your-test-app-id
+XHS_TOKEN=your-test-upload-token
 ```
 
-环境内的 `project`、`release` 按字段覆盖全局配置。相对路径从命令执行目录解析。
+```dotenv title=".env.prod"
+XHS_APPID=your-prod-app-id
+XHS_TOKEN=your-prod-upload-token
+```
 
-## 配置规则与 CI 行为
+```npm
+npm exec -- mpc upload --platform xhs --env test
+```
 
-- `appid`、`token`、`project.root`、`release.version`、`release.description` 均必填且不能仅含空白。
-- 版本号跟随官方 SDK，只检查非空并原样传递，没有自动递增，也不额外限制为 `x.y.z`。
-- `release.description` 对应官方上传参数 `desc`。
-- 使用 `setAppConfig` 配置 Token，再执行 `upload`。官方工具会将 Token 保存到当前运行用户的本机配置存储中；CI 应使用临时运行环境，密钥不要提交到仓库。
-- 未配置 Token、项目 AppID 不匹配或 SDK 尝试回退登录时，立即报错，不启动扫码登录。认证失败不自动重试其他登录方式。
-- SDK 仅在执行小红书上传时加载。默认不启用详细日志，不调用预览、提审或正式发布。
+Token 不要提交到仓库。
 
-上传失败会以非零退出码反馈，CLI 会继续处理剩余配置目标。
+## 配置项
+
+| 字段                  | 说明                                                         |
+| --------------------- | ------------------------------------------------------------ |
+| `env`                 | `string`。环境标识，CLI `--env` 按此筛选。必填。             |
+| `appid`               | `string`。小程序 AppID。必填，且必须与 `project.config.json` 中的 `appid` 一致。 |
+| `token`               | `string`。代码上传 Token。必填。仅支持 Token 认证，失败不会扫码登录。官方工具会写入本机配置，不要提交到仓库。 |
+| `project`             | `ProjectConfig`。覆盖全局 `project`，未设置的字段继承全局值。 |
+| `project.root`        | `string`。包含 `project.config.json` 的构建产物目录。必填。  |
+| `release`             | `ReleaseConfig`。覆盖全局 `release`，未设置的字段继承全局值。 |
+| `release.version`     | `string`。上传版本号。必填；原样传递，不限制为 `x.y.z`，也不自动递增。 |
+| `release.description` | `string`。版本说明，对应官方上传参数 `desc`。必填。          |
 
 官方文档：[命令行工具](https://miniapp.xiaohongshu.com/doc/DC459669)、[秘钥免密登录](https://miniapp.xiaohongshu.com/doc/DC630678)。

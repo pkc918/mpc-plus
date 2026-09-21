@@ -4,18 +4,21 @@ description: 使用 Token 上传抖音小程序，并配置测试通道和 sourc
 icon: Douyin
 ---
 
-抖音上传基于 `tt-ide-cli`。执行前需要准备以下内容：
+抖音上传基于 `tt-ide-cli`。执行前需要准备：
 
 - 已完成构建的抖音小程序目录。
 - 小程序 `appid`。
 - 对应小程序的上传 Token。
 
-## 最小配置
+## 配置示例
 
 ```ts title="mpc.config.ts"
 import { defineConfig } from "@mpc-plus/cli";
 
 export default defineConfig({
+  project: {
+    root: "./dist/build/mp-toutiao",
+  },
   release: {
     version: "1.0.0",
     description: "优化首页体验",
@@ -23,44 +26,50 @@ export default defineConfig({
   platforms: {
     douyin: [
       {
+        env: "test",
+        appid: process.env.DOUYIN_APPID ?? "",
+        token: process.env.DOUYIN_TOKEN ?? "",
+      },
+      {
         env: "prod",
         appid: process.env.DOUYIN_APPID ?? "",
         token: process.env.DOUYIN_TOKEN ?? "",
-        project: { root: "./dist/build/mp-toutiao" },
-        upload: {
-          channel: "1",
-          needUploadSourcemap: true,
-        },
       },
     ],
   },
 });
 ```
 
-创建 `.env.prod`：
+`--env` 会作为 Vite mode 加载对应环境文件。创建 `.env.test` 和 `.env.prod`：
 
-```dotenv
-DOUYIN_APPID=tt123
-DOUYIN_TOKEN=your-upload-token
+```dotenv title=".env.test"
+DOUYIN_APPID=tt-test-appid
+DOUYIN_TOKEN=your-test-upload-token
 ```
 
-运行：
+```dotenv title=".env.prod"
+DOUYIN_APPID=tt-prod-appid
+DOUYIN_TOKEN=your-prod-upload-token
+```
 
 ```npm
-npm exec -- mpc upload --platform douyin --env prod
+npm exec -- mpc upload --platform douyin --env test
 ```
 
-`appid` 和 `token` 为必填配置，Token 应通过环境变量提供，不要提交到仓库。
-环境内的 `project`、`release` 按字段覆盖全局配置，未设置的字段继承全局值。
+Token 不要提交到仓库。
 
-## 上传选项
+## 配置项
 
-`upload` 可选，目前开放官方 SDK 的 `channel` 和 `needUploadSourcemap` 参数。
-`channel` 是抖音测试通道，与 MPC 的 `env` 环境标识相互独立。
-
-抖音上传通过 `tt-ide-cli` 的 Node.js API 执行：先调用 `setAppConfig` 配置 Token，再调用 `upload` 上传。官方工具会将 Token 写入本机的 CLI 配置文件。
-
-- `project.root` 必填，指向已构建的抖音小程序目录，其中 `project.config.json` 的 `appid` 必须与此处配置一致。
-- `release.description` 必填，作为官方工具的 `changeLog`。
-- `release.version` 可选；填写时须为 `x.y.z` 数字格式，省略时由官方工具自动递增。
-- 上传不会自动复制预览链接到剪贴板，也不会输出二维码文件。
+| 字段                         | 说明                                                         |
+| ---------------------------- | ------------------------------------------------------------ |
+| `env`                        | `string`。环境标识，CLI `--env` 按此筛选。必填。             |
+| `appid`                      | `string`。小程序 AppID。必填，且必须与 `project.config.json` 中的 `appid` 一致。 |
+| `token`                      | `string`。上传 Token。必填。官方工具会写入本机 CLI 配置，不要提交到仓库。 |
+| `project`                    | `ProjectConfig`。覆盖全局 `project`，未设置的字段继承全局值。 |
+| `project.root`               | `string`。已构建的抖音小程序目录。必填。                     |
+| `release`                    | `ReleaseConfig`。覆盖全局 `release`，未设置的字段继承全局值。 |
+| `release.version`            | `string`。上传版本号。可选；填写时须为 `x.y.z`，省略则由官方工具自动递增。 |
+| `release.description`        | `string`。版本说明，对应官方工具的 `changeLog`。必填。       |
+| `upload`                     | `DouyinUploadOptions`。透传 `tt-ide-cli` 上传参数。可选。    |
+| `upload.channel`             | `string`。抖音测试通道，与 MPC 的 `env` 环境标识相互独立。   |
+| `upload.needUploadSourcemap` | `boolean`。是否上传 source map。                             |
