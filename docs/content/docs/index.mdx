@@ -4,15 +4,23 @@ description: 用一份配置管理多平台、多环境的小程序上传流程�
 icon: Rocket
 ---
 
-MPC Plus 是一个面向小程序 CI 的命令行工具。它从当前目录读取配置，解析需要执行的平台和环境，并调用对应平台的上传能力。
+MPC Plus 是面向小程序 CI 的命令行工具。它从当前目录读取配置，解析需要执行的平台和环境，再调用对应平台的上传能力。本地和流水线使用同一条命令。
 
-## 快速体验
+## 五分钟上手
+
+<Steps>
+<Step>
 
 ### 安装 CLI
+
+把 CLI 装进项目，锁定团队和 CI 使用的版本：
 
 ```bash
 pnpm add -D @mpc-plus/cli
 ```
+
+</Step>
+<Step>
 
 ### 创建配置
 
@@ -41,6 +49,9 @@ export default defineConfig({
 });
 ```
 
+</Step>
+<Step>
+
 ### 执行上传
 
 ```bash
@@ -48,6 +59,9 @@ pnpm exec mpc upload
 ```
 
 不指定参数时，CLI 会执行配置文件中的全部平台和环境。
+
+</Step>
+</Steps>
 
 ## 工作流程
 
