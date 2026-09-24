@@ -24,6 +24,13 @@ npm install -D @mpc-plus/cli
 npm exec -- mpc --help
 ```
 
+也可以通过 Homebrew 全局安装：
+
+```bash
+brew install pkc918/tap/mpc-plus
+mpc --help
+```
+
 ### 2. 配置项目
 
 先使用项目原有的构建命令生成小程序产物，再在项目根目录创建 `mpc.config.ts`：

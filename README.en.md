@@ -24,6 +24,13 @@ npm install -D @mpc-plus/cli
 npm exec -- mpc --help
 ```
 
+Alternatively, install it globally with Homebrew:
+
+```bash
+brew install pkc918/tap/mpc-plus
+mpc --help
+```
+
 ### 2. Configure your project
 
 Build your mini program using your project's existing build command, then create `mpc.config.ts` in the project root:

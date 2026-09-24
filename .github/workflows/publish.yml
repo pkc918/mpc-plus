@@ -86,3 +86,103 @@ jobs:
           fi
 
           gh release create "$RELEASE_TAG" release/CHANGELOG.md "${args[@]}"
+
+  homebrew:
+    name: Update Homebrew formula
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          path: source
+
+      - name: Prepare Homebrew formula metadata
+        id: formula
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          version="${RELEASE_TAG#v}"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Unsupported release version: $version"
+            exit 1
+          fi
+
+          package_version="$(node -p "require('./source/packages/cli/package.json').version")"
+          if [[ "$package_version" != "$version" ]]; then
+            echo "::error::Tag version $version does not match CLI package version $package_version"
+            exit 1
+          fi
+
+          url="https://registry.npmjs.org/@mpc-plus/cli/-/cli-${version}.tgz"
+          archive="${RUNNER_TEMP}/mpc-plus-cli-${version}.tgz"
+          curl --fail --location --silent --show-error \
+            --retry 10 --retry-all-errors --retry-delay 3 \
+            "$url" --output "$archive"
+          sha256="$(sha256sum "$archive" | awk '{print $1}')"
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "sha256=$sha256" >> "$GITHUB_OUTPUT"
+
+      - name: Validate Homebrew tap token
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        shell: bash
+        run: |
+          if [[ -z "$HOMEBREW_TAP_TOKEN" ]]; then
+            echo "::error::Missing HOMEBREW_TAP_TOKEN. It must have Contents read/write access to pkc918/homebrew-tap."
+            exit 1
+          fi
+
+      - name: Checkout Homebrew tap
+        uses: actions/checkout@v6
+        with:
+          repository: pkc918/homebrew-tap
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: homebrew-tap
+
+      - name: Update Homebrew formula
+        working-directory: homebrew-tap
+        env:
+          FORMULA_SHA256: ${{ steps.formula.outputs.sha256 }}
+          FORMULA_VERSION: ${{ steps.formula.outputs.version }}
+        shell: bash
+        run: |
+          formula="Formula/mpc-plus.rb"
+          mkdir -p Formula
+
+          if [[ ! -f "$formula" ]]; then
+            cp ../source/Formula/mpc-plus.rb "$formula"
+          fi
+
+          ruby <<'RUBY'
+          path = "Formula/mpc-plus.rb"
+          content = File.read(path)
+          version = ENV.fetch("FORMULA_VERSION")
+          sha256 = ENV.fetch("FORMULA_SHA256")
+
+          unless content.sub!(/^  PACKAGE_VERSION = "[^"]+"\.freeze$/, "  PACKAGE_VERSION = \"#{version}\".freeze")
+            abort "Formula does not contain PACKAGE_VERSION"
+          end
+          unless content.sub!(/^  sha256 "[0-9a-f]+"$/, "  sha256 \"#{sha256}\"")
+            abort "Formula does not contain a top-level sha256"
+          end
+
+          File.write(path, content)
+          RUBY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add "$formula"
+          if git diff --cached --quiet -- "$formula"; then
+            echo "Homebrew formula is already up to date."
+            exit 0
+          fi
+
+          git commit -m "Update mpc-plus to $FORMULA_VERSION"
+          git pull --rebase origin main
+          git push origin HEAD:main
